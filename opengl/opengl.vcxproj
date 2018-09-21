@@ -130,12 +130,15 @@
     <ClCompile Include="Application.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="lighting.frag" />
+    <None Include="lighting.vert" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\awesomeface.png" />
