@@ -1,14 +1,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "stb_image.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Shader.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Shader.h"
 
 #include <iostream>
 
@@ -21,7 +20,8 @@ float lastFrame = 0.0f;
 float yaw = 0, pitch = 0;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-Model model("../res/nanosuit.obj");
+Model model("..\\res\\nanosuit.obj", false);
+//Utilities utils;
 
 bool firstmouse = true;
 
@@ -29,6 +29,40 @@ void framebufferSizeCallback(GLFWwindow* window, int width, int height) { glView
 void processInput(GLFWwindow* window);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+unsigned int loadTexture(std::string path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+	}
+	stbi_image_free(data);
+	return textureID;
+}
 
 int main(void)
 {
@@ -206,32 +240,32 @@ int main(void)
 		lightingShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[0].constant", 1.0f);
-		lightingShader.setFloat("pointLights[0].linear", 0.09);
-		lightingShader.setFloat("pointLights[0].quadratic", 0.032);
+		lightingShader.setFloat("pointLights[0].linear", 0.09f);
+		lightingShader.setFloat("pointLights[0].quadratic", 0.032f);
 
 		lightingShader.setVec3("pointLights[1].position", pointLightPositions[1]);
 		lightingShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
 		lightingShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[1].constant", 1.0f);
-		lightingShader.setFloat("pointLights[1].linear", 0.09);
-		lightingShader.setFloat("pointLights[1].quadratic", 0.032);
+		lightingShader.setFloat("pointLights[1].linear", 0.09f);
+		lightingShader.setFloat("pointLights[1].quadratic", 0.032f);
 
 		lightingShader.setVec3("pointLights[2].position", pointLightPositions[2]);
 		lightingShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
 		lightingShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[2].constant", 1.0f);
-		lightingShader.setFloat("pointLights[2].linear", 0.09);
-		lightingShader.setFloat("pointLights[2].quadratic", 0.032);
+		lightingShader.setFloat("pointLights[2].linear", 0.09f);
+		lightingShader.setFloat("pointLights[2].quadratic", 0.032f);
 
 		lightingShader.setVec3("pointLights[3].position", pointLightPositions[3]);
 		lightingShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
 		lightingShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
 		lightingShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
 		lightingShader.setFloat("pointLights[3].constant", 1.0f);
-		lightingShader.setFloat("pointLights[3].linear", 0.09);
-		lightingShader.setFloat("pointLights[3].quadratic", 0.032);
+		lightingShader.setFloat("pointLights[3].linear", 0.09f);
+		lightingShader.setFloat("pointLights[3].quadratic", 0.032f);
 
 		glm::vec3 lightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
 		glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);

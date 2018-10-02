@@ -1,7 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <glad/glad.h>
+#include <glad/glad.h> // holds all OpenGL type declarations
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -9,37 +9,51 @@
 #include "Shader.h"
 
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <iostream>
 #include <vector>
-#include <sstream>
-#include <fstream>
+using namespace std;
 
-struct Vertex
-{
+struct Vertex {
+	// position
 	glm::vec3 Position;
+	// normal
 	glm::vec3 Normal;
+	// texCoords
 	glm::vec2 TexCoords;
+	// tangent
+	glm::vec3 Tangent;
+	// bitangent
+	glm::vec3 Bitangent;
 };
 
-struct Texture
-{
-	unsigned int ID;
-	std::string type;
-	std::string path;
+struct Texture {
+	unsigned int id;
+	string type;
+	string path;
 };
 
-class MeshData
-{
+class Mesh {
 public:
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	/*  Mesh Data  */
+	vector<Vertex> vertices;
+	vector<unsigned int> indices;
+	vector<Texture> textures;
+	unsigned int VAO;
 
-	MeshData(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
+	/*  Functions  */
+	// constructor
+	Mesh(vector<Vertex> vertices, vector<unsigned int> indices, vector<Texture> textures);
+	// render the mesh
 	void Draw(Shader shader);
-
 private:
-	unsigned int VAO, VBO, EBO;
+	/*  Render data  */
+	unsigned int VBO, EBO;
+
+	/*  Functions    */
+	// initializes all the buffer objects/arrays
 	void setupMesh();
-}
+};
 #endif
+
