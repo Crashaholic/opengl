@@ -13,12 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="shaders">
+      <UniqueIdentifier>{8380e349-a81b-40a8-8513-7aa890d0cac6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Dependencies\src\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -32,12 +41,32 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.frag" />
-    <None Include="default.vert" />
-    <None Include="lighting.frag" />
-    <None Include="lighting.vert" />
+    <None Include="default.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="default.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="lighting.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="lighting.vert">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="pointlight.frag">
+      <Filter>shaders</Filter>
+    </None>
+    <None Include="spotlight.frag">
+      <Filter>shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\awesomeface.png">
