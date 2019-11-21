@@ -5,23 +5,23 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Camera.h"
-#include "Model.h"
-#include "Shader.h"
-
 #include <iostream>
+
+#include "Camera.h"
+#include "Shader.h"
+#include "Model.h"
+
 
 glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
-int windowWidth = 800, windowHeight = 600;
+int windowWidth = 1280, 
+windowHeight = 720;
 float lastX = float(windowWidth / 2), lastY = float(windowHeight / 2);
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 float yaw = 0, pitch = 0;
 
 Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
-Model model("..\\res\\nanosuit.obj", false);
-//Utilities utils;
 
 bool firstmouse = true;
 
@@ -103,6 +103,7 @@ int main(void)
 
 	Shader lightingShader("default.vert", "default.frag");
 	Shader lampShader("lighting.vert", "lighting.frag");
+	Model suit("../res/nanosuit.obj", false);
 
 	float vertices[] = {
 		// positions          // normals           // texture coords
@@ -219,19 +220,32 @@ int main(void)
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glActiveTexture(GL_TEXTURE0);
+		lightingShader.use();
+		lightingShader.setVec3("viewPos", camera.Position);
+		glm::vec3 lightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+		glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
+		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), windowWidth / (float)windowHeight, 0.1f, 100.0f);
+		glm::mat4 view = camera.GetViewMatrix();
+		lightingShader.setMat4("projection", projection);
+		lightingShader.setMat4("view", view);
+
+		glm::mat4 model;
+		model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::translate(model, glm::vec3(0.0f, 2.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		lightingShader.setMat4("model", model);
+		suit.Draw(lightingShader);
+
+		/*glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, diffuseMap);
 		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, specularMap);
-		
-		lightingShader.use();
+		glBindTexture(GL_TEXTURE_2D, specularMap);*/
 
-		lightingShader.setVec3("viewPos", camera.Position);
 		lightingShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
 		lightingShader.setFloat("material.shininess", 256.0f);
-
+		
 		lightingShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		lightingShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
+		lightingShader.setVec3("dirLight.ambient", 0.4f, 0.4f, 0.4f);
 		lightingShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 		lightingShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
@@ -266,17 +280,7 @@ int main(void)
 		lightingShader.setFloat("pointLights[3].constant", 1.0f);
 		lightingShader.setFloat("pointLights[3].linear", 0.09f);
 		lightingShader.setFloat("pointLights[3].quadratic", 0.032f);
-
-		glm::vec3 lightDiffuse = glm::vec3(1.0f, 1.0f, 1.0f);
-		glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
-
-		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), 800.0f / 600.0f, 0.1f, 100.0f);
-		glm::mat4 view = camera.GetViewMatrix();
-		lightingShader.setMat4("projection", projection);
-		lightingShader.setMat4("view", view);
-
-		glm::mat4 model;
-		lightingShader.setMat4("model", model);
+		/*
 		glBindVertexArray(VAO);
 		for (unsigned int i = 0; i < 10; i++)
 		{
@@ -287,7 +291,7 @@ int main(void)
 			lightingShader.setMat4("model", model);
 
 			glDrawArrays(GL_TRIANGLES, 0, 36);
-		}
+		}*/
 
 		lampShader.use();
 		lampShader.setMat4("projection", projection);
@@ -296,7 +300,6 @@ int main(void)
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.2f));
 		lampShader.setMat4("model", model);
-
 		glBindVertexArray(lightVAO);
 		for (unsigned int i = 0; i < 4; i++)
 		{
@@ -306,6 +309,7 @@ int main(void)
 			lampShader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+
 
 		glfwSwapBuffers(window);
 
